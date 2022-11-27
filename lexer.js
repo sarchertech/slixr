@@ -14,6 +14,7 @@ const TokenType = Object.freeze({
   defmod: Symbol("DEFMOD"),
   ident: Symbol("IDENT"),
   alias: Symbol("ALIAS"),
+  atom: Symbol("ATOM"),
   do: Symbol("DO"),
   def: Symbol("DEF"),
   int: Symbol("INT"),
@@ -117,6 +118,8 @@ class Lexer {
           this.identifier();
         } else if (this.isUpperAlpha(c)) {
           this.alias();
+        } else if (c == ":") {
+          this.atom();
         } else {
           console.log("Unexpected character");
         }
@@ -222,6 +225,10 @@ class Lexer {
   identifier() {
     while (this.isAlphaNumeric(this.peek())) this.advance();
 
+    if (this.peek() == '!' || this.peek() == '?') {
+      this.advance();
+    }
+
     const text = this.source.substring(this.start, this.current);
     const type = Reserved[text];
     if (type == null) {
@@ -236,13 +243,34 @@ class Lexer {
 
     this.addToken(TokenType.alias);
   }
+
+  atom() {
+    if (this.isAlpha(this.peek())) {
+      this.advance();
+      while (this.isAlphaNumeric(this.peek()) || this.peek() == '@') this.advance();
+
+      if (this.peek() == '!' || this.peek() == '?') {
+        this.advance();
+      }
+
+      // Trim the :
+      const value = this.source.substring(this.start + 1, this.current);
+      this.addToken(TokenType.atom, value);
+
+    } else {
+      console.log("Error atom must start with a letter or _")
+    }
+  }
 }
 
 const src = `
   defmodule Foo do
     def bar do
-       2.1 + 3 != 4
-       baz(5)
+      aaa!bb = 2
+      :aa!aa
+      :f@l_ibbets!
+      2.1 + 3 != 4
+      baz(5)
     end
 
     def baz(x) do
@@ -258,3 +286,10 @@ const src = `
 let lex = new Lexer(src);
 
 lex.scanTokens();
+
+// @next
+// setup a simple testing framework and add some tests
+// get maps working (kw_identifier, brackets fat arrow maybe more)
+// handle the rest of the ops
+// maybe get quoted atoms working.
+// figure out if we're going to support unicode
