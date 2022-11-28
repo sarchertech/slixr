@@ -52,6 +52,7 @@ class Token {
 
 class Lexer {
   tokens = [];
+  errors = [];
   start = 0;
   current = 0;
 
@@ -121,11 +122,9 @@ class Lexer {
         } else if (c == ":") {
           this.atom();
         } else {
-          console.log("Unexpected character");
+          this.addError(`Unexpected character ${c}`)
         }
         break;
-
-      // TODO add default and idents and reserved words
     }
   }
 
@@ -139,8 +138,6 @@ class Lexer {
 
     const token = new Token(type, text)
     this.tokens.push(token);
-
-    console.log(token);
   }
 
   match(expected) {
@@ -168,7 +165,7 @@ class Lexer {
     }
 
     if (this.isAtEnd()) {
-      console.log("Unterminated string");
+      this.addError("Unterminated string");
       return;
     }
 
@@ -245,6 +242,7 @@ class Lexer {
   }
 
   atom() {
+    console.log("atom alalalal")
     if (this.isAlpha(this.peek())) {
       this.advance();
       while (this.isAlphaNumeric(this.peek()) || this.peek() == '@') this.advance();
@@ -258,8 +256,13 @@ class Lexer {
       this.addToken(TokenType.atom, value);
 
     } else {
-      console.log("Error atom must start with a letter or _")
+      console.log("WKSLKSLSS")
+      this.addError("Error atom must start with a letter or _");
     }
+  }
+
+  addError(message) {
+    this.errors.push({ message: message })
   }
 }
 
