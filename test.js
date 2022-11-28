@@ -33,19 +33,28 @@ valid_atoms = [
 ]
 
 invalid_atoms = [
-  // ":1abc",
-  // ":",
-  ":@abc",
+  ":1abc",
+  ":",
+  ":1abc",
+  ":1abc :@bc",
 ]
 
-// for (const atom in valid_atoms) {
-//   let lex = new Lexer(atom);
-//   lex.scanToken();
-//   assert(lex.errors.length, 0);
-// }
-
-for (const atom in invalid_atoms) {
+for (const atom of valid_atoms) {
   let lex = new Lexer(atom);
-  lex.scanToken();
-  assert(lex.errors.length, 1);
+  lex.scanTokens();
+  assert(lex.errors.length, 0);
+  console.log(lex)
 }
+
+for (const atom of invalid_atoms) {
+  let lex = new Lexer(atom);
+  lex.scanTokens();
+  assert(lex.errors.length, 1);
+  console.log(lex)
+}
+
+// @next
+// Maybe add property testing with a template for atoms
+// Have some kind of function where you can pass in the src, tokens, and errors and it asserts they match
+// and then write a loop that can build a list of those structures (src, tokens, errors)
+// also have asserts log the lexer

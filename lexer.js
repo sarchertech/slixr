@@ -242,7 +242,6 @@ class Lexer {
   }
 
   atom() {
-    console.log("atom alalalal")
     if (this.isAlpha(this.peek())) {
       this.advance();
       while (this.isAlphaNumeric(this.peek()) || this.peek() == '@') this.advance();
@@ -256,7 +255,6 @@ class Lexer {
       this.addToken(TokenType.atom, value);
 
     } else {
-      console.log("WKSLKSLSS")
       this.addError("Error atom must start with a letter or _");
     }
   }
@@ -291,7 +289,6 @@ let lex = new Lexer(src);
 lex.scanTokens();
 
 // @next
-// setup a simple testing framework and add some tests
 // get maps working (kw_identifier, brackets fat arrow maybe more)
 // handle the rest of the ops
 // maybe get quoted atoms working.
