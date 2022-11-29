@@ -55,27 +55,64 @@ const valid_atom_props = [
   ['', '!', '?']
 ]
 
-for (let i = 0; i < 100; i++) {
-  let generated_atom = ":";
+function random_char(arr) {
+  const random_pick = arr[Math.floor(Math.random() * arr.length)];
 
-  for (const template of valid_atom_props) {
-    pattern = template[Math.floor(Math.random() * template.length)]
-
-    if (Array.isArray(pattern)) {
-      const start = pattern[0].charCodeAt(0);
-      const end = pattern[1].charCodeAt(0);
-      generated_atom += String.fromCharCode(start + Math.random() * (end - start + 1));
-    }
-    else {
-      generated_atom += pattern;
-    }
+  if (Array.isArray(random_pick)) {
+    const start = random_pick[0].charCodeAt(0);
+    const end = random_pick[1].charCodeAt(0);
+    return String.fromCharCode(start + Math.random() * (end - start + 1));
   }
 
-  lex = new Lexer(generated_atom);
-  lex.scanTokens();
+  return random_pick;
+}
 
+function atom_start() {
+  return random_char(['_', ['a', 'z'], ['A', 'Z']]);
+}
+
+function atom_middle() {
+  const times = Math.floor(Math.random() * 3)
+  let str = "";
+  for (let i = 0; i < times; i++) {
+    str += random_char(['', '_', '@', ['a', 'z'], ['A', 'Z'], ['0', '9']]);
+
+  }
+  return str;
+}
+
+function atom_end() {
+  return random_char(['', '!', '?']);
+}
+
+for (let i = 0; i < 1000; i++) {
+  const template = `:${atom_start() + atom_middle() + atom_end()} `
+  lex = new Lexer(template);
+  lex.scanTokens();
   assertEq(lex.errors.length, 0);
 }
+
+// for (let i = 0; i < 1000; i++) {
+//   let generated_atom = ":";
+
+//   for (const template of valid_atom_props) {
+//     const pattern = template[Math.floor(Math.random() * template.length)];
+
+//     if (Array.isArray(pattern)) {
+//       const start = pattern[0].charCodeAt(0);
+//       const end = pattern[1].charCodeAt(0);
+//       generated_atom += String.fromCharCode(start + Math.random() * (end - start + 1));
+//     }
+//     else {
+//       generated_atom += pattern;
+//     }
+//   }
+
+//   lex = new Lexer(generated_atom);
+//   lex.scanTokens();
+
+//   assertEq(lex.errors.length, 0);
+// }
 
 // const start = "a".charCodeAt(0);
 // const end = "z".charCodeAt(0);
