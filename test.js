@@ -31,7 +31,8 @@ function assertLex(lex, expected_tokens, expected_errors) {
   for (let i = 0; i < lex.tokens.length; i++) {
     const actual = lex.tokens[i];
     const expected = expected_tokens[i]
-    if (actual.type != expected.type && actual.lexeme != expected.lexeme) {
+
+    if (actual.type != expected.type || actual.lexeme != expected.lexeme) {
       console.log(`Failed--actual token doesn't equal expected`);
       console.log('actual');
       console.log(lex.tokens);
@@ -88,7 +89,7 @@ function atom_end() {
 }
 
 for (let i = 0; i < 1000; i++) {
-  const template = `${atom_start() + atom_middle() + atom_end()} `
+  const template = atom_start() + atom_middle() + atom_end();
   const string = ":" + template
   lex = new Lexer(string);
   lex.scanTokens();
@@ -114,14 +115,14 @@ function ident_end() {
   return random_char(['', '!', '?']);
 }
 
-for (let i = 0; i < 100000; i++) {
-  const string = `${ident_start() + ident_middle() + ident_end()} `
-  lex = new Lexer(string);
+for (let i = 0; i < 1000; i++) {
+  const str = ident_start() + ident_middle() + ident_end();
+  if (str == "do") { continue; }
+  lex = new Lexer(str);
   lex.scanTokens();
-  expected_tokens = [new Token(TokenType.ident, string), EOF];
+  expected_tokens = [new Token(TokenType.ident, str), EOF];
   assertLex(lex, expected_tokens, []);
 }
 
 // @next
-// fix the errors with in the testing when keywords are accidentally generated
 // compress the stuff in the TODO above
