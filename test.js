@@ -8,24 +8,23 @@ function assertEq(actual, expected) {
   }
 }
 
+function log_actual_expected(actual, expected) {
+  console.log('actual');
+  console.log(actual);
+  console.log('expected');
+  console.log(expected);
+  console.log('------------');
+}
+
 function assertLex(lex, expected_tokens, expected_errors) {
   if (lex.tokens.length != expected_tokens.length) {
-    // TODO compress these
     console.log(`Failed--actual token length doesn't equal expected--${lex.tokens.length} vs. ${expected_tokens.length}`);
-    console.log('actual');
-    console.log(lex.tokens);
-    console.log('expected');
-    console.log(expected_tokens);
-    console.log('------------');
+    log_actual_expected(lex.tokens, expected_tokens);
     return
   }
   if (lex.errors.length != expected_errors.length) {
     console.log(`Failed--actual errors length doesn't equal expected--${lex.errors.length} vs. ${expected_errors.length}`);
-    console.log('actual');
-    console.log(lex.errors);
-    console.log('expected');
-    console.log(expected_errors);
-    console.log('------------');
+    log_actual_expected(lex.errors, expected_errors);
     return
   }
   for (let i = 0; i < lex.tokens.length; i++) {
@@ -34,20 +33,12 @@ function assertLex(lex, expected_tokens, expected_errors) {
 
     if (actual.type != expected.type || actual.lexeme != expected.lexeme) {
       console.log(`Failed--actual token doesn't equal expected`);
-      console.log('actual');
-      console.log(lex.tokens);
-      console.log('expected');
-      console.log(expected_tokens);
-      console.log('------------');
+      log_actual_expected(lex.tokens, expected_tokens);
       return
     }
     if (lex.errors[i] != expected_errors[i]) {
       console.log(`Failed--actual error doesn't equal expected--${lex.errors[i]} vs. ${expected_errors[i]}`);
-      console.log('actual');
-      console.log(lex.errors);
-      console.log('expected');
-      console.log(expected_errors);
-      console.log('------------');
+      log_actual_expected(lex.errors, expected_errors);
       return
     }
   }
@@ -125,4 +116,5 @@ for (let i = 0; i < 1000; i++) {
 }
 
 // @next
-// compress the stuff in the TODO above
+// test keywords
+// test strings. add other keywords
