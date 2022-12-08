@@ -115,6 +115,37 @@ for (let i = 0; i < 1000; i++) {
   assertLex(lex, expected_tokens, []);
 }
 
+const reservedWords = [
+  "and", "or", "not", "in", "when", "begin", "end", "cond", "if", "else",
+  "unless", "do", "quote", "unquote", "unquote_splicing", "case", "try",
+  "rescue", "catch", "after", "function", "def", "macro", "defmacro", "defp",
+  "defmodule", "defprotocol", "defimpl", "defcallback", "import", "alias",
+  "require", "use", "quote", "unquote", "unquote_splicing", "fn", "receive",
+  "send", "spawn", "raise", "throw", "exit"
+]
+
+const operators = [
+  "@", ".", "+", "-", "!", "^", "**", "*", "/", "+", "-", "++", "--", "+++", "---",
+  "..", "<>", "in", "not in", "|>", "<<<", ">>>", "<<~", "~>>", "<~", "~>", "<~>",
+  "<", ">", "<=", ">=", "==", "!=", "=~", "===", "!==", "&&", "&&&", "and", "||",
+  "|||", "or", "=", "&", "=>", "|", "::", "when", "<-"
+]
+
+for (const operator of operators) {
+  lex = new Lexer(operator);
+  lex.scanTokens();
+  expected_tokens = [new Token(TokenType.operator, operator), EOF];
+  assertLex(lex, expected_tokens, []);
+
+}
+
+// Test all the tokens together
+// list of all elixir tokens as a string
+
+
 // @next
 // test keywords
 // test strings. add other keywords
+
+// @question 
+// need to decide if we want to have token types and subtypes for things like operators
