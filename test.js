@@ -116,7 +116,7 @@ function ident_end() {
 
 for (let i = 0; i < 1000; i++) {
   const str = ident_start() + ident_middle() + ident_end();
-  if (str == "do") { continue; }
+  if (str == "do" || str == "in" || str == "or") { continue; }
   lex = new Lexer(str);
   lex.scanTokens();
   expected_tokens = [new Token(TokenType.ident, str), EOF];

@@ -139,153 +139,51 @@ class Lexer {
         break;
 
       case '=':
-        if (this.match('=')) {
-          if (this.match('=')) {
-            this.addToken(TokenType.equal_equal_equal);
-          } else {
-            this.addToken(TokenType.equal_equal);
-          }
-        } else if (this.match('~')) {
-          this.addToken(TokenType.equal_tilde);
-        } else if (this.match('>')) {
-          this.addToken(TokenType.arrow);
-        } else {
-          this.addToken(TokenType.equal);
-        }
+        this.addFirstMatch([
+          ['==', TokenType.equal_equal_equal], ['=', TokenType.equal_equal], ['>', TokenType.arrow],
+          ['~', TokenType.equal_tilde]], TokenType.equal);
         break;
       case '!':
-        if (this.match('=')) {
-          if (this.match('=')) {
-            this.addToken(TokenType.bang_equal_equal);
-          } else {
-            this.addToken(TokenType.bang_equal);
-          }
-        } else {
-          this.addToken(TokenType.bang);
-        }
+        this.addFirstMatch([['==', TokenType.bang_equal_equal], ['=', TokenType.bang_equal]], TokenType.bang);
         break;
       case '+':
-        if (this.match('+')) {
-          if (this.match('+')) {
-            this.addToken(TokenType.plus_plus_plus);
-          } else {
-            this.addToken(TokenType.plus_plus);
-          }
-        } else {
-          this.addToken(TokenType.plus);
-        }
+        this.addFirstMatch([['++', TokenType.plus_plus_plus], ['+', TokenType.plus_plus]], TokenType.plus);
         break;
       case '*':
-        if (this.match('*')) {
-          if (this.match('*')) {
-            this.addToken(TokenType.star_star_star);
-          } else {
-            this.addToken(TokenType.star_star);
-          }
-        } else {
-          this.addToken(TokenType.star);
-        }
+        this.addFirstMatch([['**', TokenType.star_star_star], ['*', TokenType.star_star]], TokenType.star);
         break;
       case '-':
-        if (this.match('-')) {
-          if (this.match('-')) {
-            this.addToken(TokenType.minus_minus_minus);
-          } else {
-            this.addToken(TokenType.minus_minus);
-          }
-        } else {
-          this.addToken(TokenType.minus);
-        }
+        this.addFirstMatch([['--', TokenType.minus_minus_minus], ['-', TokenType.minus_minus]], TokenType.minus);
         break;
       case '.':
-        if (this.match('.')) {
-          this.addToken(TokenType.dot_dot);
-        } else {
-          this.addToken(TokenType.dot);
-        }
+        this.addFirstMatch([['.', TokenType.dot_dot]], TokenType.dot);
         break;
       case '<':
-        if (this.match('<')) {
-          if (this.match('<')) {
-            this.addToken(TokenType.lt_lt_lt);
-          }
-          else if (this.match('~')) {
-            this.addToken(TokenType.lt_lt_tilde);
-          } else {
-            this.addToken(TokenType.lt_lt);
-          }
-        }
-        else if (this.match('>')) {
-          this.addToken(TokenType.lt_gt);
-        }
-        else if (this.match('=')) {
-          this.addToken(TokenType.lt_equal);
-        }
-        else if (this.match('~')) {
-          if (this.match('>')) {
-            this.addToken(TokenType.lt_tilde_gt);
-          } else {
-            this.addToken(TokenType.lt_tilde);
-          }
-        }
-        else if (this.match('-')) {
-          this.addToken(TokenType.left_arrow);
-        }
-        else {
-          this.addToken(TokenType.lt);
-        }
+        this.addFirstMatch([
+          ['<<', TokenType.lt_lt_lt], ['<~', TokenType.lt_lt_tilde], ['<', TokenType.lt_lt], ['>', TokenType.lt_gt],
+          ['=', TokenType.lt_equal], ['~>', TokenType.lt_tilde_gt], ['~', TokenType.lt_tilde],
+          ['-', TokenType.left_arrow]
+        ], TokenType.lt);
         break;
       case '>':
-        if (this.match('>')) {
-          if (this.match('>')) {
-            this.addToken(TokenType.gt_gt_gt);
-          }
-        }
-        else if (this.match('=')) {
-          this.addToken(TokenType.gt_equal);
-        }
-        else if (this.match('-')) {
-          this.addToken(TokenType.gt_minus);
-        }
-        else {
-          this.addToken(TokenType.gt);
-        }
+        this.addFirstMatch([
+          ['>>', TokenType.gt_gt_gt], ['=', TokenType.gt_equal], ['-', TokenType.gt_minus],
+        ], TokenType.gt);
         break;
       case '|':
-        if (this.match('>')) {
-          this.addToken(TokenType.pipeline);
-        }
-        else if (this.match('|')) {
-          if (this.match('|')) {
-            this.addToken(TokenType.pipe_pipe_pipe);
-          } else {
-            this.addToken(TokenType.pipe_pipe);
-          }
-        } else {
-          this.addToken(TokenType.pipe);
-        }
+        this.addFirstMatch([
+          ['>', TokenType.pipeline], ['||', TokenType.pipe_pipe_pipe], ['|', TokenType.pipe_pipe]
+        ], TokenType.pipe);
         break;
       case '~':
-        if (this.match('>')) {
-          if (this.match('>')) {
-            this.addToken(TokenType.tilde_gt_gt);
-          } else {
-            this.addToken(TokenType.tilde_gt);
-          }
-        } else {
-          this.addToken(TokenType.tilde);
-        }
+        this.addFirstMatch([
+          ['>>', TokenType.tilde_gt_gt], ['>', TokenType.tilde_gt]
+        ], TokenType.tilde);
         break;
       case '&':
-        if (this.match('&')) {
-          if (this.match('&')) {
-            this.addToken(TokenType.amp_amp_amp);
-          } else {
-            this.addToken(TokenType.amp_amp);
-          }
-        } else {
-          this.addToken(TokenType.ampersand);
-        }
+        this.addFirstMatch([
+          ['&&', TokenType.amp_amp_amp], ['&', TokenType.amp_amp]
+        ], TokenType.ampersand);
         break;
       case ':':
         if (this.match(':')) {
@@ -293,6 +191,7 @@ class Lexer {
         } else {
           this.atom();
         }
+
         break;
 
       case '#':
@@ -333,6 +232,39 @@ class Lexer {
 
     const token = new Token(type, text)
     this.tokens.push(token);
+  }
+
+  addTokenIfMatch(pattern, type) {
+    switch (pattern.length) {
+      case 1:
+        if (this.match(pattern[0])) {
+          this.addToken(type);
+          return true;
+        }
+        return false;
+      case 2:
+        if (this.peek() == pattern[0] && this.peekNext() == pattern[1]) {
+          this.addToken(type);
+          this.current += 2;
+          return true;
+        }
+        return false;
+      default:
+        throw 'Function only supports pattern of length 1 or 2!';
+    }
+  }
+
+  addFirstMatch(patternTokenPairs, defaultToken) {
+    for (const patternTokenPair of patternTokenPairs) {
+      const pattern = patternTokenPair[0];
+      const token = patternTokenPair[1];
+
+      if (this.addTokenIfMatch(pattern, token)) {
+        return;
+      }
+    }
+
+    this.addToken(defaultToken);
   }
 
   match(expected) {
@@ -484,6 +416,7 @@ let lex = new Lexer(src);
 lex.scanTokens();
 
 // @next
+// add more reserved words
 // get maps working (kw_identifier, brackets fat arrow maybe more)
 
 // handle the rest of the ops
