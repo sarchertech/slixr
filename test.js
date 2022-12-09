@@ -150,6 +150,8 @@ for (const operator of operators) {
   lex.scanTokens();
   assertEq(lex.tokens.length, 2, lex);
   assertEq(lex.errors.length, 0, lex);
+  console.log(lex.tokens)
+  console.log(lex.errors)
   assertNotEq(lex.tokens[0].type, TokenType.ident, lex);
   assertNotEq(lex.tokens[0].type, TokenType.atom, lex);
 }
@@ -164,3 +166,6 @@ for (const operator of operators) {
 
 // @question 
 // need to decide if we want to have token types and subtypes for things like operators
+
+// TODO
+// Fix the symbol to string thing maybe don't console log the lex

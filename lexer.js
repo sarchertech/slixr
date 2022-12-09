@@ -32,9 +32,9 @@ const TokenType = Object.freeze({
   minus: Symbol("MINUS"), // -
   bang: Symbol("BANG"), // !
   caret: Symbol("CARET"), // ^
-  star_star: Symbol("STAR_STAR"), // **
   star: Symbol("STAR"), // *
-  slash: Symbol("SLASH"), // "/"
+  star_star: Symbol("STAR_STAR"), // **
+  slash: Symbol("SLASH"), // /
   plus_plus: Symbol("PLUS_PLUS"), // ++
   minus_minus: Symbol("MINUS_MINUS"), // --
   plus_plus_plus: Symbol("PLUS_PLUS_PLUS"), // +++
@@ -71,58 +71,6 @@ const TokenType = Object.freeze({
   colon_colon: Symbol("COLON_COLON"), // ::
   when: Symbol("WHEN"), // when
   left_arrow: Symbol("LEFT_ARROW") // <-
-  // when_op: Symbol("WHEN_OP"),
-  // dot_call_op: Symbol("DOT_CALL_OP"),
-  // ternary_op: Symbol("TERNARY_OP"),
-  // rel_op: Symbol("REL_OP"),
-  // assoc_op: Symbol("ASSOC_OP"),
-  // capture_op: Symbol("CAPTURE_OP"),
-  // capture_int: Symbol("CAPTURE_INT"),
-  // xor_op: Symbol("XOR_OP"),
-  // range_op: Symbol("RANGE_OP"),
-  // concat_op: Symbol("CONCAT_OP"),
-  // power_op: Symbol("POWER_OP"),
-  // mult_op: Symbol("MULT_OP"),
-  // dual_op: Symbol("DUAL_OP"),
-  // type_op: Symbol("TYPE_OP"),
-  // in_match_op: Symbol("IN_MATCH_OP"),
-  // in_op: Symbol("IN_OP"),
-  // match_op: Symbol("MATCH_OP"),
-  // arrow_op: Symbol("ARROW_OP"),
-  // or_op: Symbol("OR_OP"),
-  // and_op: Symbol("AND_OP"),
-  // unary_op: Symbol("UNARY_OP"),
-  // at_op: Symbol("AT_OP"),
-  // comp_op: Symbol("COMP_OP"),
-  // sigil: Symbol("SIGIL"),
-  // list_string: Symbol("LIST_STRING"),
-  // bin_string: Symbol("BIN_STRING"),
-  // dot: Symbol("DOT"),
-  // comma: Symbol("COMMA"),
-  // semicolon: Symbol("SEMICOLON"),
-  // eol: Symbol("EOL"),
-  // left_bracket: Symbol("LEFT_BRACKET"),
-  // right_bracket: Symbol("RIGHT_BRACKET"),
-  // left_curly: Symbol("LEFT_CURLY"),
-  // right_curly: Symbol("RIGHT_CURLY"),
-  // left_shift: Symbol("LEFT_SHIFT"),
-  // right_shift: Symbol("RIGHT_SHIFT"),
-  // percent_curly: Symbol("PERCENT_CURLY"),
-  // percent: Symbol("PERCENT"),
-  // pipe_op: Symbol("PIPE_OP"),
-  // stab_op: Symbol("STAB_OP"),
-  // true: Symbol("TRUE"),
-  // false: Symbol("FALSE"),
-  // nil: Symbol("NIL"),
-  // fn: Symbol("FN"),
-  // struct: Symbol("STRUCT"),
-  // defstruct: Symbol("DEFSTRUCT"),
-  // defimpl: Symbol("DEFIMPL"),
-  // defprotocol: Symbol("DEFPROTOCOL"),
-  // defrecord: Symbol("DEFRECORD"),
-  // defexception: Symbol("DEFEXCEPTION"),
-  // defcallback: Symbol("DEFCALLBACK"),
-  // defp: Symbol("DEFP"),
 })
 
 const Reserved = Object.freeze({
@@ -178,6 +126,21 @@ class Lexer {
         break;
       case '@':
         this.addToken(TokenType.at);
+        break;
+      case '.':
+        this.addToken(TokenType.dot);
+        break;
+      case '-':
+        this.addToken(TokenType.minus);
+        break;
+      case '^':
+        this.addToken(TokenType.caret);
+        break;
+      case '*':
+        this.addToken(TokenType.star);
+        break;
+      case '/':
+        this.addToken(TokenType.slash);
         break;
 
       case '=':
