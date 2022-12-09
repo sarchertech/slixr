@@ -28,6 +28,7 @@ const TokenType = Object.freeze({
   // operators
   at: Symbol("AT"), // @
   dot: Symbol("DOT"), // .
+  dot_dot: Symbol("DOT_DOT"), // ..
   plus: Symbol("PLUS"), // +
   minus: Symbol("MINUS"), // -
   bang: Symbol("BANG"), // !
@@ -36,17 +37,17 @@ const TokenType = Object.freeze({
   star_star: Symbol("STAR_STAR"), // **
   slash: Symbol("SLASH"), // /
   plus_plus: Symbol("PLUS_PLUS"), // ++
-  minus_minus: Symbol("MINUS_MINUS"), // --
   plus_plus_plus: Symbol("PLUS_PLUS_PLUS"), // +++
+  minus_minus: Symbol("MINUS_MINUS"), // --
   minus_minus_minus: Symbol("MINUS_MINUS_MINUS"), // ---
-  dot_dot: Symbol("DOT_DOT"), // ..
   lt_gt: Symbol("LT_GT"), // <>
   in: Symbol("IN"), // in
-  not_in: Symbol("NOT_IN"), // not in
+  not: Symbol("NOT"), // not
   pipeline: Symbol("PIPELINE"), // |>
-  lt_lt_lt: Symbol("LT_LT_LT"), // <<<
+  lt_lt_lt: Symbol("LT_LT_LT"), // <<< 
   gt_gt_gt: Symbol("GT_GT_GT"), // >>>
   lt_tilde: Symbol("LT_TILDE"), // <<
+  lt_lt_tilde: Symbol("LT_LT_TILDE"), // <<~
   tilde_gt: Symbol("TILDE_GT"), // >>
   lt_tilde_gt: Symbol("LT_TILDE_GT"), // <>
   lt: Symbol("LT"), // <
@@ -78,6 +79,8 @@ const Reserved = Object.freeze({
   'def': TokenType.def,
   'do': TokenType.do,
   'end': TokenType.end,
+  'in': TokenType.in,
+  'not': TokenType.not,
 })
 
 class Token {
@@ -115,9 +118,6 @@ class Lexer {
   scanToken() {
     const c = this.advance();
     switch (c) {
-      case '+':
-        this.addToken(TokenType.plus);
-        break;
       case '(':
         this.addToken(TokenType.left_paren);
         break;
@@ -127,17 +127,8 @@ class Lexer {
       case '@':
         this.addToken(TokenType.at);
         break;
-      case '.':
-        this.addToken(TokenType.dot);
-        break;
-      case '-':
-        this.addToken(TokenType.minus);
-        break;
       case '^':
         this.addToken(TokenType.caret);
-        break;
-      case '*':
-        this.addToken(TokenType.star);
         break;
       case '/':
         this.addToken(TokenType.slash);
@@ -149,11 +140,101 @@ class Lexer {
       case '!':
         this.addToken(this.match('=') ? TokenType.bang_equal : TokenType.bang);
         break;
+      case '+':
+        if (this.match('+')) {
+          if (this.match('+')) {
+            this.addToken(TokenType.plus_plus_plus);
+          } else {
+            this.addToken(TokenType.plus_plus);
+          }
+        } else {
+          this.addToken(TokenType.plus);
+        }
+        break;
+      case '*':
+        if (this.match('*')) {
+          if (this.match('*')) {
+            this.addToken(TokenType.star_star_star);
+          } else {
+            this.addToken(TokenType.star_star);
+          }
+        } else {
+          this.addToken(TokenType.star);
+        }
+        break;
+      case '-':
+        if (this.match('-')) {
+          if (this.match('-')) {
+            this.addToken(TokenType.minus_minus_minus);
+          } else {
+            this.addToken(TokenType.minus_minus);
+          }
+        } else {
+          this.addToken(TokenType.minus);
+        }
+        break;
+      case '.':
+        if (this.match('.')) {
+          this.addToken(TokenType.dot_dot);
+        } else {
+          this.addToken(TokenType.dot);
+        }
+        break;
       case '<':
-        this.addToken(this.match('=') ? TokenType.lt_equal : TokenType.lt);
+        if (this.match('<')) {
+          if (this.match('<')) {
+            this.addToken(TokenType.lt_lt_lt);
+          }
+          else if (this.match('~')) {
+            this.addToken(TokenType.lt_lt_tilde);
+          } else {
+            this.addToken(TokenType.lt_lt);
+          }
+        }
+        else if (this.match('>')) {
+          this.addToken(TokenType.lt_gt);
+        }
+        else if (this.match('=')) {
+          this.addToken(TokenType.lt_equal);
+        }
+        else if (this.match('~')) {
+          if (this.match('>')) {
+            this.addToken(TokenType.lt_tilde_gt);
+          } else {
+            this.addToken(TokenType.lt_tilde);
+          }
+        }
+        else {
+          this.addToken(TokenType.lt);
+        }
         break;
       case '>':
-        this.addToken(this.match('=') ? TokenType.gt_equal : TokenType.gt);
+        if (this.match('>')) {
+          if (this.match('>')) {
+            this.addToken(TokenType.gt_gt_gt);
+          }
+        }
+        else if (this.match('=')) {
+          this.addToken(TokenType.gt_equal);
+        }
+        else if (this.match('-')) {
+          this.addToken(TokenType.gt_minus);
+        }
+        else {
+          this.addToken(TokenType.gt);
+        }
+        break;
+      case '|':
+        if (this.match('>')) {
+          this.addToken(TokenType.pipeline);
+        }
+        else if (this.match('|')) {
+          if (this.match('|')) {
+            this.addToken(TokenType.pipe_pipe_pipe);
+          } else {
+            this.addToken(TokenType.pipe_pipe);
+          }
+        }
         break;
 
       case '#':

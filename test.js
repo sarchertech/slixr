@@ -3,7 +3,7 @@ function assertEq(actual, expected) {
     console.log("Passed");
     return true;
   } else {
-    console.log(`Failed ${actual} != ${expected} `);
+    console.log(`Failed ${actual.toString()} != ${expected.toString()} `);
     console.log(lex.tokens)
     console.log(lex.errors)
     return false;
@@ -15,7 +15,7 @@ function assertNotEq(actual, expected) {
     console.log("Passed");
     return true;
   } else {
-    console.log(`Failed ${actual} == ${expected} but it shouldn't`);
+    console.log(`Failed ${actual.toString()} == ${expected.toString()} but it shouldn't`);
     console.log(lex.tokens)
     console.log(lex.errors)
     return false;
@@ -140,7 +140,7 @@ const reservedWords = [
 
 const operators = [
   "@", ".", "+", "-", "!", "^", "**", "*", "/", "+", "-", "++", "--", "+++", "---",
-  "..", "<>", "in", "not in", "|>", "<<<", ">>>", "<<~", "~>>", "<~", "~>", "<~>",
+  "..", "<>", "in", "not", "|>", "<<<", ">>>", "<<~", "~>>", "<~", "~>", "<~>",
   "<", ">", "<=", ">=", "==", "!=", "=~", "===", "!==", "&&", "&&&", "and", "||",
   "|||", "or", "=", "&", "=>", "|", "::", "when", "<-"
 ]
@@ -150,8 +150,6 @@ for (const operator of operators) {
   lex.scanTokens();
   assertEq(lex.tokens.length, 2, lex);
   assertEq(lex.errors.length, 0, lex);
-  console.log(lex.tokens)
-  console.log(lex.errors)
   assertNotEq(lex.tokens[0].type, TokenType.ident, lex);
   assertNotEq(lex.tokens[0].type, TokenType.atom, lex);
 }
@@ -166,6 +164,3 @@ for (const operator of operators) {
 
 // @question 
 // need to decide if we want to have token types and subtypes for things like operators
-
-// TODO
-// Fix the symbol to string thing maybe don't console log the lex
