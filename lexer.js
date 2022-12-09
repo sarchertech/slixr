@@ -19,21 +19,58 @@ const TokenType = Object.freeze({
   def: Symbol("DEF"),
   int: Symbol("INT"),
   float: Symbol("FLOAT"),
-  plus: Symbol("PLUS"),
   end: Symbol("END"),
   eof: Symbol("EOF"),
-  equal: Symbol("EQUAL"),
-  bang_equal: Symbol("BANG_EQUAL"),
-  equal_equal: Symbol("EQUAL_EQUAL"),
-  lt_equal: Symbol("LT_EQUAL"),
-  gt_equal: Symbol("GT_EQUAL"),
-  gt: Symbol("GT"),
-  lt: Symbol("LT"),
-  bang: Symbol("BANG"),
   left_paren: Symbol("LEFT_PAREN"),
   right_paren: Symbol("RIGHT_PAREN"),
   string: Symbol("STRING"),
-  at: Symbol("AT"),
+
+  // operators
+  at: Symbol("AT"), // @
+  dot: Symbol("DOT"), // .
+  plus: Symbol("PLUS"), // +
+  minus: Symbol("MINUS"), // -
+  bang: Symbol("BANG"), // !
+  caret: Symbol("CARET"), // ^
+  star_star: Symbol("STAR_STAR"), // **
+  star: Symbol("STAR"), // *
+  slash: Symbol("SLASH"), // "/"
+  plus_plus: Symbol("PLUS_PLUS"), // ++
+  minus_minus: Symbol("MINUS_MINUS"), // --
+  plus_plus_plus: Symbol("PLUS_PLUS_PLUS"), // +++
+  minus_minus_minus: Symbol("MINUS_MINUS_MINUS"), // ---
+  dot_dot: Symbol("DOT_DOT"), // ..
+  lt_gt: Symbol("LT_GT"), // <>
+  in: Symbol("IN"), // in
+  not_in: Symbol("NOT_IN"), // not in
+  pipeline: Symbol("PIPELINE"), // |>
+  lt_lt_lt: Symbol("LT_LT_LT"), // <<<
+  gt_gt_gt: Symbol("GT_GT_GT"), // >>>
+  lt_tilde: Symbol("LT_TILDE"), // <<
+  tilde_gt: Symbol("TILDE_GT"), // >>
+  lt_tilde_gt: Symbol("LT_TILDE_GT"), // <>
+  lt: Symbol("LT"), // <
+  gt: Symbol("GT"), // >
+  lt_equal: Symbol("LT_EQUAL"), // <=
+  gt_equal: Symbol("GT_EQUAL"), // >=
+  equal_equal: Symbol("EQUAL_EQUAL"), // ==
+  bang_equal: Symbol("BANG_EQUAL"), // !=
+  equal_tilde: Symbol("EQUAL_TILDE"), // =
+  equal_equal_equal: Symbol("EQUAL_EQUAL_EQUAL"), // ===
+  bang_equal_equal: Symbol("BANG_EQUAL_EQUAL"), // !==
+  and: Symbol("AND"), // and
+  ampersand: Symbol("AMPERSAND"), // &
+  amp_amp: Symbol("AMP_AMP"), // &&
+  amp_amp_amp: Symbol("AMP_AMP_AMP"), // &&&
+  pipe: Symbol("PIPE"), // |
+  pipe_pipe: Symbol("DOUBLE_PIPE"), // ||
+  pipe_pipe_pipe: Symbol("TRIPLE_PIPE"), // |||
+  or: Symbol("OR"), // or
+  equal: Symbol("EQUAL"), // =
+  arrow: Symbol("ARROW"), // =>
+  colon_colon: Symbol("COLON_COLON"), // ::
+  when: Symbol("WHEN"), // when
+  left_arrow: Symbol("LEFT_ARROW") // <-
   // when_op: Symbol("WHEN_OP"),
   // dot_call_op: Symbol("DOT_CALL_OP"),
   // ternary_op: Symbol("TERNARY_OP"),

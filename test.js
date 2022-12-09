@@ -4,6 +4,20 @@ function assertEq(actual, expected) {
     return true;
   } else {
     console.log(`Failed ${actual} != ${expected} `);
+    console.log(lex.tokens)
+    console.log(lex.errors)
+    return false;
+  }
+}
+
+function assertNotEq(actual, expected) {
+  if (actual !== expected) {
+    console.log("Passed");
+    return true;
+  } else {
+    console.log(`Failed ${actual} == ${expected} but it shouldn't`);
+    console.log(lex.tokens)
+    console.log(lex.errors)
     return false;
   }
 }
@@ -134,9 +148,10 @@ const operators = [
 for (const operator of operators) {
   lex = new Lexer(operator);
   lex.scanTokens();
-  expected_tokens = [new Token(TokenType.operator, operator), EOF];
-  assertLex(lex, expected_tokens, []);
-
+  assertEq(lex.tokens.length, 2, lex);
+  assertEq(lex.errors.length, 0, lex);
+  assertNotEq(lex.tokens[0].type, TokenType.ident, lex);
+  assertNotEq(lex.tokens[0].type, TokenType.atom, lex);
 }
 
 // Test all the tokens together
