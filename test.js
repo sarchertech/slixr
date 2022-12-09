@@ -1,23 +1,17 @@
 function assertEq(actual, expected) {
   if (actual === expected) {
-    console.log("Passed");
     return true;
   } else {
-    console.log(`Failed ${actual.toString()} != ${expected.toString()} `);
-    console.log(lex.tokens)
-    console.log(lex.errors)
+    // console.log(`Failed ${actual.toString()} != ${expected.toString()} `);
     return false;
   }
 }
 
 function assertNotEq(actual, expected) {
   if (actual !== expected) {
-    console.log("Passed");
     return true;
   } else {
-    console.log(`Failed ${actual.toString()} == ${expected.toString()} but it shouldn't`);
-    console.log(lex.tokens)
-    console.log(lex.errors)
+    // console.log(`Failed ${actual.toString()} == ${expected.toString()} but it shouldn't`);
     return false;
   }
 }
@@ -148,19 +142,27 @@ const operators = [
 for (const operator of operators) {
   lex = new Lexer(operator);
   lex.scanTokens();
-  assertEq(lex.tokens.length, 2, lex);
-  assertEq(lex.errors.length, 0, lex);
-  assertNotEq(lex.tokens[0].type, TokenType.ident, lex);
-  assertNotEq(lex.tokens[0].type, TokenType.atom, lex);
+  const a = assertEq(lex.tokens.length, 2);
+  const b = assertEq(lex.errors.length, 0);
+  const c = assertNotEq(lex.tokens[0].type, TokenType.ident);
+  const d = assertNotEq(lex.tokens[0].type, TokenType.atom);
+  const e = assertNotEq(lex.tokens[0].type, undefined);
+
+  if (!(a && b && c && d && e)) {
+    console.log(`Failed--${operator}`);
+    console.log(lex.tokens);
+    console.log(lex.errors);
+    console.log("-------");
+  } else {
+    console.log("Passed")
+  }
 }
-
-// Test all the tokens together
-// list of all elixir tokens as a string
-
 
 // @next
 // test keywords
 // test strings. add other keywords
 
-// @question 
-// need to decide if we want to have token types and subtypes for things like operators
+// compress the matches for *, **, *** with function
+// maybe find a generic function for for complex like ~> and ~>>
+
+// Decision - no types and subtypes for tokens

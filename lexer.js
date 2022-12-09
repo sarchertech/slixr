@@ -26,52 +26,53 @@ const TokenType = Object.freeze({
   string: Symbol("STRING"),
 
   // operators
-  at: Symbol("AT"), // @
-  dot: Symbol("DOT"), // .
-  dot_dot: Symbol("DOT_DOT"), // ..
-  plus: Symbol("PLUS"), // +
-  minus: Symbol("MINUS"), // -
-  bang: Symbol("BANG"), // !
-  caret: Symbol("CARET"), // ^
-  star: Symbol("STAR"), // *
-  star_star: Symbol("STAR_STAR"), // **
-  slash: Symbol("SLASH"), // /
-  plus_plus: Symbol("PLUS_PLUS"), // ++
-  plus_plus_plus: Symbol("PLUS_PLUS_PLUS"), // +++
-  minus_minus: Symbol("MINUS_MINUS"), // --
-  minus_minus_minus: Symbol("MINUS_MINUS_MINUS"), // ---
-  lt_gt: Symbol("LT_GT"), // <>
-  in: Symbol("IN"), // in
-  not: Symbol("NOT"), // not
-  pipeline: Symbol("PIPELINE"), // |>
-  lt_lt_lt: Symbol("LT_LT_LT"), // <<< 
-  gt_gt_gt: Symbol("GT_GT_GT"), // >>>
-  lt_tilde: Symbol("LT_TILDE"), // <<
-  lt_lt_tilde: Symbol("LT_LT_TILDE"), // <<~
-  tilde_gt: Symbol("TILDE_GT"), // >>
-  lt_tilde_gt: Symbol("LT_TILDE_GT"), // <>
-  lt: Symbol("LT"), // <
-  gt: Symbol("GT"), // >
-  lt_equal: Symbol("LT_EQUAL"), // <=
-  gt_equal: Symbol("GT_EQUAL"), // >=
-  equal_equal: Symbol("EQUAL_EQUAL"), // ==
-  bang_equal: Symbol("BANG_EQUAL"), // !=
-  equal_tilde: Symbol("EQUAL_TILDE"), // =
-  equal_equal_equal: Symbol("EQUAL_EQUAL_EQUAL"), // ===
-  bang_equal_equal: Symbol("BANG_EQUAL_EQUAL"), // !==
-  and: Symbol("AND"), // and
-  ampersand: Symbol("AMPERSAND"), // &
   amp_amp: Symbol("AMP_AMP"), // &&
   amp_amp_amp: Symbol("AMP_AMP_AMP"), // &&&
+  ampersand: Symbol("AMPERSAND"), // &
+  and: Symbol("AND"), // and
+  arrow: Symbol("ARROW"), // =>
+  at: Symbol("AT"), // @
+  bang: Symbol("BANG"), // !
+  bang_equal: Symbol("BANG_EQUAL"), // !=
+  bang_equal_equal: Symbol("BANG_EQUAL_EQUAL"), // !==
+  caret: Symbol("CARET"), // ^
+  colon_colon: Symbol("COLON_COLON"), // ::
+  dot: Symbol("DOT"), // .
+  dot_dot: Symbol("DOT_DOT"), // ..
+  equal: Symbol("EQUAL"), // =
+  equal_equal: Symbol("EQUAL_EQUAL"), // ==
+  equal_equal_equal: Symbol("EQUAL_EQUAL_EQUAL"), // ===
+  equal_tilde: Symbol("EQUAL_TILDE"), // =
+  gt: Symbol("GT"), // >
+  gt_equal: Symbol("GT_EQUAL"), // >=
+  gt_gt_gt: Symbol("GT_GT_GT"), // >>>
+  in: Symbol("IN"), // in
+  left_arrow: Symbol("LEFT_ARROW"), // <-
+  lt: Symbol("LT"), // <
+  lt_equal: Symbol("LT_EQUAL"), // <=
+  lt_gt: Symbol("LT_GT"), // <>
+  lt_lt_lt: Symbol("LT_LT_LT"), // <<< 
+  lt_lt_tilde: Symbol("LT_LT_TILDE"), // <<~
+  lt_tilde: Symbol("LT_TILDE"), // <<
+  lt_tilde_gt: Symbol("LT_TILDE_GT"), // <>
+  minus: Symbol("MINUS"), // -
+  minus_minus: Symbol("MINUS_MINUS"), // --
+  minus_minus_minus: Symbol("MINUS_MINUS_MINUS"), // ---
+  not: Symbol("NOT"), // not
+  or: Symbol("OR"), // or
   pipe: Symbol("PIPE"), // |
   pipe_pipe: Symbol("DOUBLE_PIPE"), // ||
   pipe_pipe_pipe: Symbol("TRIPLE_PIPE"), // |||
-  or: Symbol("OR"), // or
-  equal: Symbol("EQUAL"), // =
-  arrow: Symbol("ARROW"), // =>
-  colon_colon: Symbol("COLON_COLON"), // ::
-  when: Symbol("WHEN"), // when
-  left_arrow: Symbol("LEFT_ARROW") // <-
+  pipeline: Symbol("PIPELINE"), // |>
+  plus: Symbol("PLUS"), // +
+  plus_plus: Symbol("PLUS_PLUS"), // ++
+  plus_plus_plus: Symbol("PLUS_PLUS_PLUS"), // +++
+  slash: Symbol("SLASH"), // /
+  star: Symbol("STAR"), // *
+  star_star: Symbol("STAR_STAR"), // **
+  tilde_gt: Symbol("TILDE_GT"), // ~>
+  tilde_gt_gt: Symbol("TILDE_GT_GT"), // ~>>
+  when: Symbol("WHEN") // when
 })
 
 const Reserved = Object.freeze({
@@ -81,6 +82,9 @@ const Reserved = Object.freeze({
   'end': TokenType.end,
   'in': TokenType.in,
   'not': TokenType.not,
+  'or': TokenType.or,
+  'when': TokenType.when,
+  'and': TokenType.and
 })
 
 class Token {
@@ -135,10 +139,30 @@ class Lexer {
         break;
 
       case '=':
-        this.addToken(this.match('=') ? TokenType.equal_equal : TokenType.equal);
+        if (this.match('=')) {
+          if (this.match('=')) {
+            this.addToken(TokenType.equal_equal_equal);
+          } else {
+            this.addToken(TokenType.equal_equal);
+          }
+        } else if (this.match('~')) {
+          this.addToken(TokenType.equal_tilde);
+        } else if (this.match('>')) {
+          this.addToken(TokenType.arrow);
+        } else {
+          this.addToken(TokenType.equal);
+        }
         break;
       case '!':
-        this.addToken(this.match('=') ? TokenType.bang_equal : TokenType.bang);
+        if (this.match('=')) {
+          if (this.match('=')) {
+            this.addToken(TokenType.bang_equal_equal);
+          } else {
+            this.addToken(TokenType.bang_equal);
+          }
+        } else {
+          this.addToken(TokenType.bang);
+        }
         break;
       case '+':
         if (this.match('+')) {
@@ -204,6 +228,9 @@ class Lexer {
             this.addToken(TokenType.lt_tilde);
           }
         }
+        else if (this.match('-')) {
+          this.addToken(TokenType.left_arrow);
+        }
         else {
           this.addToken(TokenType.lt);
         }
@@ -234,6 +261,37 @@ class Lexer {
           } else {
             this.addToken(TokenType.pipe_pipe);
           }
+        } else {
+          this.addToken(TokenType.pipe);
+        }
+        break;
+      case '~':
+        if (this.match('>')) {
+          if (this.match('>')) {
+            this.addToken(TokenType.tilde_gt_gt);
+          } else {
+            this.addToken(TokenType.tilde_gt);
+          }
+        } else {
+          this.addToken(TokenType.tilde);
+        }
+        break;
+      case '&':
+        if (this.match('&')) {
+          if (this.match('&')) {
+            this.addToken(TokenType.amp_amp_amp);
+          } else {
+            this.addToken(TokenType.amp_amp);
+          }
+        } else {
+          this.addToken(TokenType.ampersand);
+        }
+        break;
+      case ':':
+        if (this.match(':')) {
+          this.addToken(TokenType.colon_colon);
+        } else {
+          this.atom();
         }
         break;
 
