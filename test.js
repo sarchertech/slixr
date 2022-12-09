@@ -116,7 +116,7 @@ function ident_end() {
 
 for (let i = 0; i < 1000; i++) {
   const str = ident_start() + ident_middle() + ident_end();
-  if (str == "do" || str == "in" || str == "or") { continue; }
+  if (str == "do" || str == "in" || str == "or" || str == "if") { continue; }
   lex = new Lexer(str);
   lex.scanTokens();
   expected_tokens = [new Token(TokenType.ident, str), EOF];
@@ -131,6 +131,25 @@ const reservedWords = [
   "require", "use", "quote", "unquote", "unquote_splicing", "fn", "receive",
   "send", "spawn", "raise", "throw", "exit"
 ]
+
+for (const word of reservedWords) {
+  lex = new Lexer(word);
+  lex.scanTokens();
+  const a = assertEq(lex.tokens.length, 2);
+  const b = assertEq(lex.errors.length, 0);
+  const c = assertNotEq(lex.tokens[0].type, TokenType.ident);
+  const d = assertNotEq(lex.tokens[0].type, TokenType.atom);
+  const e = assertNotEq(lex.tokens[0].type, undefined);
+
+  if (!(a && b && c && d && e)) {
+    console.log(`Failed--${word}`);
+    console.log(lex.tokens);
+    console.log(lex.errors);
+    console.log("-------");
+  } else {
+    console.log("Passed")
+  }
+}
 
 const operators = [
   "@", ".", "+", "-", "!", "^", "**", "*", "/", "+", "-", "++", "--", "+++", "---",

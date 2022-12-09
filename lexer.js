@@ -11,43 +11,55 @@
 // .
 
 const TokenType = Object.freeze({
-  defmod: Symbol("DEFMOD"),
-  ident: Symbol("IDENT"),
+  after: Symbol("AFTER"),
   alias: Symbol("ALIAS"),
-  atom: Symbol("ATOM"),
-  do: Symbol("DO"),
-  def: Symbol("DEF"),
-  int: Symbol("INT"),
-  float: Symbol("FLOAT"),
-  end: Symbol("END"),
-  eof: Symbol("EOF"),
-  left_paren: Symbol("LEFT_PAREN"),
-  right_paren: Symbol("RIGHT_PAREN"),
-  string: Symbol("STRING"),
-
-  // operators
   amp_amp: Symbol("AMP_AMP"), // &&
   amp_amp_amp: Symbol("AMP_AMP_AMP"), // &&&
   ampersand: Symbol("AMPERSAND"), // &
   and: Symbol("AND"), // and
   arrow: Symbol("ARROW"), // =>
   at: Symbol("AT"), // @
+  atom: Symbol("ATOM"),
   bang: Symbol("BANG"), // !
   bang_equal: Symbol("BANG_EQUAL"), // !=
   bang_equal_equal: Symbol("BANG_EQUAL_EQUAL"), // !==
+  begin: Symbol("BEGIN"),
   caret: Symbol("CARET"), // ^
+  case: Symbol("CASE"),
+  catch: Symbol("CATCH"),
   colon_colon: Symbol("COLON_COLON"), // ::
+  cond: Symbol("COND"),
+  def: Symbol("DEF"),
+  defcallback: Symbol("DEFCALLBACK"),
+  defimpl: Symbol("DEFIMPL"),
+  defmacro: Symbol("DEFMACRO"),
+  defmod: Symbol("DEFMOD"),
+  defp: Symbol("DEFP"),
+  defprotocol: Symbol("DEFPROTOCOL"),
+  do: Symbol("DO"),
   dot: Symbol("DOT"), // .
   dot_dot: Symbol("DOT_DOT"), // ..
+  else: Symbol("ELSE"),
+  end: Symbol("END"),
+  eof: Symbol("EOF"),
   equal: Symbol("EQUAL"), // =
   equal_equal: Symbol("EQUAL_EQUAL"), // ==
   equal_equal_equal: Symbol("EQUAL_EQUAL_EQUAL"), // ===
   equal_tilde: Symbol("EQUAL_TILDE"), // =
+  exit: Symbol("EXIT"),
+  float: Symbol("FLOAT"),
+  fn: Symbol("FN"),
+  function: Symbol("FUNCTION"),
   gt: Symbol("GT"), // >
   gt_equal: Symbol("GT_EQUAL"), // >=
   gt_gt_gt: Symbol("GT_GT_GT"), // >>>
+  ident: Symbol("IDENT"),
+  if: Symbol("IF"),
+  import: Symbol("IMPORT"),
   in: Symbol("IN"), // in
+  int: Symbol("INT"),
   left_arrow: Symbol("LEFT_ARROW"), // <-
+  left_paren: Symbol("LEFT_PAREN"),
   lt: Symbol("LT"), // <
   lt_equal: Symbol("LT_EQUAL"), // <=
   lt_gt: Symbol("LT_GT"), // <>
@@ -55,6 +67,7 @@ const TokenType = Object.freeze({
   lt_lt_tilde: Symbol("LT_LT_TILDE"), // <<~
   lt_tilde: Symbol("LT_TILDE"), // <<
   lt_tilde_gt: Symbol("LT_TILDE_GT"), // <>
+  macro: Symbol("MACRO"),
   minus: Symbol("MINUS"), // -
   minus_minus: Symbol("MINUS_MINUS"), // --
   minus_minus_minus: Symbol("MINUS_MINUS_MINUS"), // ---
@@ -67,30 +80,83 @@ const TokenType = Object.freeze({
   plus: Symbol("PLUS"), // +
   plus_plus: Symbol("PLUS_PLUS"), // ++
   plus_plus_plus: Symbol("PLUS_PLUS_PLUS"), // +++
+  quote: Symbol("QUOTE"),
+  raise: Symbol("RAISE"),
+  receive: Symbol("RECEIVE"),
+  require: Symbol("REQUIRE"),
+  rescue: Symbol("RESCUE"),
+  right_paren: Symbol("RIGHT_PAREN"),
+  send: Symbol("SEND"),
   slash: Symbol("SLASH"), // /
+  spawn: Symbol("SPAWN"),
   star: Symbol("STAR"), // *
   star_star: Symbol("STAR_STAR"), // **
+  string: Symbol("STRING"),
+  throw: Symbol("THROW"),
   tilde_gt: Symbol("TILDE_GT"), // ~>
   tilde_gt_gt: Symbol("TILDE_GT_GT"), // ~>>
-  when: Symbol("WHEN") // when
+  try: Symbol("TRY"),
+  unless: Symbol("UNLESS"),
+  unquote: Symbol("UNQUOTE"),
+  unquote_splicing: Symbol("UNQUOTE_SPLICING"),
+  use: Symbol("USE"),
+  when: Symbol("WHEN"), // when
+
+  left_square: Symbol("LEFT_SQUARE"),
+  right_square: Symbol("RIGHT_SQUARE"),
+  left_curly: Symbol("LEFT_CURLY"),
+  right_curly: Symbol("RIGHT_CURLY"),
+  comma: Symbol("COMMA"),
+  percent: Symbol("PERCENT"),
 })
 
 const Reserved = Object.freeze({
-  'defmodule': TokenType.defmod,
+  'after': TokenType.after,
+  'alias': TokenType.alias,
+  'and': TokenType.and,
+  'begin': TokenType.begin,
+  'case': TokenType.case,
+  'catch': TokenType.catch,
+  'cond': TokenType.cond,
   'def': TokenType.def,
+  'defcallback': TokenType.defcallback,
+  'defimpl': TokenType.defimpl,
+  'defmacro': TokenType.defmacro,
+  'defmodule': TokenType.defmod,
+  'defp': TokenType.defp,
+  'defprotocol': TokenType.defprotocol,
   'do': TokenType.do,
+  'else': TokenType.else,
   'end': TokenType.end,
+  'exit': TokenType.exit,
+  'fn': TokenType.fn,
+  'function': TokenType.function,
+  'if': TokenType.if,
+  'import': TokenType.import,
   'in': TokenType.in,
+  'macro': TokenType.macro,
   'not': TokenType.not,
   'or': TokenType.or,
+  'quote': TokenType.quote,
+  'raise': TokenType.raise,
+  'receive': TokenType.receive,
+  'require': TokenType.require,
+  'rescue': TokenType.rescue,
+  'send': TokenType.send,
+  'spawn': TokenType.spawn,
+  'throw': TokenType.throw,
+  'try': TokenType.try,
+  'unless': TokenType.unless,
+  'unquote': TokenType.unquote,
+  'unquote_splicing': TokenType.unquote_splicing,
+  'use': TokenType.use,
   'when': TokenType.when,
-  'and': TokenType.and
 })
 
 class Token {
-  constructor(type, lexeme) {
+  constructor(type, value) {
     this.type = type;
-    this.lexeme = lexeme;
+    this.value = value;
     Object.freeze(this);
   }
 }
@@ -128,6 +194,24 @@ class Lexer {
       case ')':
         this.addToken(TokenType.right_paren);
         break;
+      case '[':
+        this.addToken(TokenType.left_square);
+        break;
+      case ']':
+        this.addToken(TokenType.right_square);
+        break;
+      case '{':
+        this.addToken(TokenType.left_curly);
+        break;
+      case '}':
+        this.addToken(TokenType.right_curly);
+        break;
+      case ',':
+        this.addToken(TokenType.comma);
+        break;
+      case ',':
+        this.addToken(TokenType.comma);
+        break;
       case '@':
         this.addToken(TokenType.at);
         break;
@@ -136,6 +220,9 @@ class Lexer {
         break;
       case '/':
         this.addToken(TokenType.slash);
+        break;
+      case '%':
+        this.addToken(TokenType.percent);
         break;
 
       case '=':
@@ -301,7 +388,7 @@ class Lexer {
 
     // Trim the surrounding quotes.
     const value = this.source.substring(this.start + 1, this.current - 1);
-    addToken(TokenType.string, value);
+    this.addToken(TokenType.string, value);
   }
 
   isDigit(c) {
@@ -394,6 +481,10 @@ class Lexer {
 const src = `
   defmodule Foo do
     def bar do
+      a = %{foo: "bar", baz: 1}
+      b = %{"foo" => "bar", "baz" => 1}
+      c = [a: "b", c: 1]
+      d = [{"a", "b"}, {"c", 1}]
       aaa!bb = 2
       :aa!aa
       :f@l_ibbets!
@@ -414,10 +505,12 @@ const src = `
 let lex = new Lexer(src);
 
 lex.scanTokens();
+console.log(lex.tokens)
+console.log(lex.errors)
 
 // @next
-// add more reserved words
 // get maps working (kw_identifier, brackets fat arrow maybe more)
+// kw_identifier is weird
 
 // handle the rest of the ops
 // maybe get quoted atoms working.
